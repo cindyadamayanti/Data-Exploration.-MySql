@@ -1,0 +1,56 @@
+select * from travel;
+
+-- 1. tipe akomodasi yang sering digunakan
+select distinct Destination from travel order by Destination;
+
+-- 2. 5 destinasi paling banyak di kunjungi
+select count(Traveler_name) as jumlah, Destination from travel group by Destination order by jumlah desc limit 5;
+
+-- 3. rata2 durasi 
+select avg(Duration_days) as rata2_durasi, Destination from travel group by Destination order by rata2_durasi;
+
+-- 4. rata2 umur traveler
+select avg(Traveler_age) from travel;
+
+-- 5. rata2 umur traveler berdasarkan negaranya
+select avg(Traveler_age), Traveler_nationality from travel group by Traveler_nationality;
+
+-- 6. rata2 pengeluaran
+select avg(Transportation_cost) from travel;
+
+-- 7. jumlah masing2 gender
+select Traveler_gender, count(Traveler_gender) as jumlah from travel group by Traveler_gender;
+
+-- 8. jumlah kendaraan yang sering digunakan traveler
+select Transportation_type,count(Transportation_type) from travel group by Transportation_type;
+
+-- 9. menampilkan biaya, tipe transportasi dan durasi
+with ds_1 as (
+	select Transportation_type, avg(Transportation_cost) avg_cost
+    from travel
+	group by Transportation_type
+),
+ds_2 as (
+select Transportation_type, avg(Duration_days) avg_durasi
+    from travel
+	group by Transportation_type
+), type_transport as (
+	select distinct Transportation_type
+    from travel
+) Select type_transport.Transportation_type, 
+		ds_1.avg_cost, 
+		ds_2.avg_durasi
+	from type_transport
+left join ds_1 on ds_1.Transportation_type = type_transport.Transportation_type
+left join ds_2 on ds_2.Transportation_type = type_transport.Transportation_type;
+
+-- 10. destinasi traveller yang berumur 40 
+select Destination, Traveler_age
+from travel
+where Traveler_age >= 40 limit 5;
+
+-- 11. umur termuda yang melakukan traveling?
+select Traveler_age from travel order by Traveler_age ;
+
+-- 12. jumlah traveller berdasarkan umur
+select Traveler_age, count(Traveler_name) from travel group by Traveler_age order by Traveler_age ;
